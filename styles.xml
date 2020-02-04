@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Original AppCompact Attributes: -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorSecondary">@color/lightblue3</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorError">@color/errorColor</item>
+
+        <!-- New MaterialComponents Attributes: -->
+        <item name="colorPrimaryVariant">@color/lightblue3</item>
+        <item name="colorSecondaryVariant">@color/lightblue1</item>
+        <item name="colorSurface">@color/darkblue1</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/darkblue3</item>
+        <item name="colorOnBackground">@color/darkblue5</item>
+        <item name="colorOnError">@color/errorColor</item>
+        <item name="colorOnSurface">@color/white</item>
+    </style>
+
+</resources>
