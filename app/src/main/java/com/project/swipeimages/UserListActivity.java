@@ -2,11 +2,7 @@ package com.project.swipeimages;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,14 +23,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,63 +34,17 @@ import java.util.List;
 
 public class UserListActivity extends AppCompatActivity {
 
-    ImageBitmapDirectAdapter adapter;
-    RecyclerViewAdapter recyclerViewAdapter;
+    ImageBitmapDirectAdapter IBDadapter;
+    RecyclerViewAdapter RVadapter;
 
     public void getPhoto() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 1);
+        Intent intent = new Intent(getApplicationContext(), GetPhotoActivity.class);
+        //intent.putExtra("IBDAdapter", (Serializable) IBDadapter);// Now implements serializable !!!
+        //intent.putExtra("RVAdapter", (Serializable) RVadapter);//I had to make Kotlin class implement serializable !!!
+
+        startActivity(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Uri selectedImage = null;
-        if (data != null) {
-            selectedImage = data.getData();
-        }
-
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-
-            Bitmap bitmap;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-
-                Log.i("Image Selected", "Good work");
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                byte[] byteArray = stream.toByteArray();
-
-                ParseFile file = new ParseFile("image.png", byteArray);
-
-                ParseObject object = new ParseObject("Image");
-
-                object.put("image", file);
-
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Toast.makeText(UserListActivity.this, "Image has been shared!", Toast.LENGTH_SHORT).show();
-                            RecyclerViewAdapter.Companion.notificationByPass(recyclerViewAdapter);
-                            ImageBitmapDirectAdapter.notificationByPass(adapter);
-                        } else {
-                            Toast.makeText(UserListActivity.this, "There has been an issue uploading the image :(", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -209,15 +154,15 @@ public class UserListActivity extends AppCompatActivity {
         });
 
         //<Discover>
-        recyclerViewAdapter = RecyclerViewAdapter.Companion.setupPageView("null", false, getApplicationContext(), this);
+        RVadapter = RecyclerViewAdapter.Companion.setupPageView("null", false, getApplicationContext(), this);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
-        rvItems.setAdapter(recyclerViewAdapter);
+        rvItems.setAdapter(RVadapter);
         //</Discover>
 
         //<Profile>
         String username = ParseUser.getCurrentUser().getUsername();
-        adapter = ImageBitmapDirectAdapter.setupPageView(username, true, getApplicationContext(), this);
-        viewPager.setAdapter(adapter);
+        IBDadapter = ImageBitmapDirectAdapter.setupPageView(username, true, getApplicationContext(), this);
+        viewPager.setAdapter(IBDadapter);
         //</Profile>
 
         //<Feed>
