@@ -1,1 +1,2 @@
-include ':ParseStarterProject'
+include ':app'
+rootProject.name='SwipeImages'
