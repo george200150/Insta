@@ -45,7 +45,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onClick(View view) {//TODO: NOTA BENE: THE "LOGIN" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
+    public void onClick(View view) {//NOTA BENE: THE "LOGIN" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
         if (view.getId() == R.id.loginTextView) {
             //intent to login
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -107,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         backgroundLayout.setOnClickListener(this);
         passwordEditText.setOnKeyListener(this);
 
-        if (ParseUser.getCurrentUser() != null) { //TODO: Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.io.File com.parse.ParsePlugins.getParseDir()' on a null object reference
+        if (ParseUser.getCurrentUser() != null) {
             showUserList();
         }
 

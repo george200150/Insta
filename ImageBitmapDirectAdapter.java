@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +49,17 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView iv;
         iv = this.imageViewResourceList.get(position);
+        //TODO: to integrate the bitmap into a post, we need to encapsulate the bitmap into a parent view, which we will display
+        //the parent view should have: userName, userIcon, description, likeCounter, likeButton
+        //we could use tags (with important id-s to shorten the search time) for these views in order to access data with ease...
+
+        //LinearLayout ll = new LinearLayout(context);
+        ////ll.removeAllViews();
+        //ll.addView(iv);
+        //iv.setLayoutParams(new LinearLayout.LayoutParams(
+        //        LinearLayout.LayoutParams.MATCH_PARENT,
+        //        LinearLayout.LayoutParams.MATCH_PARENT));
+        //container.addView(ll);
         container.addView(iv);
         return iv;
     }

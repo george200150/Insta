@@ -21,6 +21,14 @@ import com.parse.ParseUser;
 
 
 
+//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
+//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
+/// add new class on server -> pair<userId, userId> -> subscribtions ~~~> rethink application logic!
+/// ATM it should be ok to hold those pairs for "FAVOURITE USERS" ---> two list of users in FEED !!!
+//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
+//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     TextView loginTextView;
@@ -43,23 +51,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View view) {//TODO: NOTA BENE: THE "SIGNUP" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
+    public void onClick(View view) {//NOTA BENE: THE "SIGNUP" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
         if (view.getId() == R.id.loginTextView) {
             //intent to signup
             Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
             this.finish();
             startActivity(intent);
-        }
-        else if (view.getId() == R.id.logoImageView || view.getId() == R.id.backgroundLayout) {
+        } else if (view.getId() == R.id.logoImageView || view.getId() == R.id.backgroundLayout) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
 
 
-    public void handleForgotPassword(View view){
+    public void handleForgotPassword(View view) {
         // intent to new window
-        Log.i("FORGOT","clicked on forgot password");
+        Log.i("FORGOT", "clicked on forgot password");
         Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
         startActivity(intent);
 
@@ -108,6 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
-    }
 
+    }
 }

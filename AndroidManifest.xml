@@ -27,6 +27,7 @@
         </activity>
         <activity android:name="com.project.swipeimages.UserListActivity" />
         <activity android:name="com.project.swipeimages.UserFeedActivity" />
+        <activity android:name="com.project.swipeimages.UserVerticalFeedActivity" />
     </application>
 
 </manifest>
