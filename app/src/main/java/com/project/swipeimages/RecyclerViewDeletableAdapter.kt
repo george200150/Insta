@@ -16,26 +16,22 @@ import java.util.ArrayList
 
 //import java.io.Serializable
 
-class RecyclerViewAdapter(private val context: Context, private val imageDataList: List<ImageData>) : /*Serializable,*/ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecyclerViewDeletableAdapter(private val context: Context, private val imageDataList: List<ImageDeletableData>) : /*Serializable,*/ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var curImageDataIndex = 0
     // context could be later used
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            in 0..2 -> ImageViewHolder(inflateResource(parent, R.layout.item_image_small))
-            3 -> ImageViewHolder(inflateResource(parent, R.layout.item_image_large))
-            else -> AdViewHolder(inflateResource(parent, R.layout.item_ad))
-        }
+        return DeletableImageViewHolder(inflateResource(parent, R.layout.item_photo_deletable))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
-        if (viewType in 0..3) {// equivalent of 0 <= i && i <= 3
-            val imageData = imageDataList[curImageDataIndex]
-            (holder as ImageViewHolder).ivImage.setImageBitmap(imageData.resource)
-            holder.tvTitle.text = imageData.title
-            holder.tvDescription.text = imageData.description
-        }
+        val imageData = imageDataList[curImageDataIndex]
+        (holder as DeletableImageViewHolder).ivImage.setImageBitmap(imageData.resource)
+        holder.tvTitle.text = imageData.title
+        holder.tvDescription.text = imageData.description
+
+        holder.ivImage.tag = imageData.uid
+
         if (curImageDataIndex < imageDataList.size - 1) {
             curImageDataIndex++
         } else {
@@ -47,15 +43,12 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
         return imageDataList.size
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return position % 5
-    }
 
     private fun inflateResource(parent: ViewGroup, resourceId: Int): View {
         return LayoutInflater.from(parent.context).inflate(resourceId, parent, false)
     }
 
-    internal inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal inner class DeletableImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var ivImage: ImageView
         var tvTitle: TextView
@@ -68,22 +61,11 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
         }
     }
 
-    internal inner class AdViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        var ivAd: ImageView
-
-        init {
-            ivAd = itemView.findViewById(R.id.ivAd)
-        }
-    }
 
     companion object{
-        fun setupPageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewAdapter {
+        fun setupDeletablePageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewDeletableAdapter {
 
-            //VAL is a constant ; VAR is a variable !!!
-            var position = 0
-
-            val adapter: RecyclerViewAdapter
+            val adapter: RecyclerViewDeletableAdapter
 
             val query = ParseQuery<ParseObject>("Image")
             if (isFilteredByUser) {
@@ -91,8 +73,8 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
             }
             query.orderByDescending("createdAt")
 
-            val images = ArrayList<ImageData>()
-            adapter = RecyclerViewAdapter(thisContext, images)// <- this is initialized before the query is completed!
+            val images = ArrayList<ImageDeletableData>()
+            adapter = RecyclerViewDeletableAdapter(thisContext, images)// <- this is initialized before the query is completed!
 
             query.findInBackground { objects, e ->
                 if (e == null && objects.size > 0) {
@@ -100,16 +82,13 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
                         val file = `object`.get("image") as ParseFile
                         val user = `object`.get("username").toString() // finally managed to add more information to a photo (DeletableImageViewHolder and XML files are responsible for that)
                         val description = `object`.get("description").toString()
+                        val uniqId = `object`.objectId.toString()
 
                         file.getDataInBackground { data, e ->
                             if (e == null && data != null) {
                                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-                                val imd = ImageData(user, description, bitmap)
-                                if(position % 5 == 4){
-                                    images.add(ImageData("empty: $user", "empty $description", bitmap))
-                                }
+                                val imd = ImageDeletableData(user, description, bitmap, uniqId)
                                 images.add(imd)
-                                position++
                                 notificationByPass(adapter)// because async
                             }
                         }
@@ -119,7 +98,7 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
             return adapter
         }
 
-        fun notificationByPass(adapter: RecyclerViewAdapter) {
+        fun notificationByPass(adapter: RecyclerViewDeletableAdapter) {
             adapter.notifyDataSetChanged()
         }
     }

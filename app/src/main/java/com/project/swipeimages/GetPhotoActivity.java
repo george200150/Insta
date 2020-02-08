@@ -24,24 +24,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
-
 public class GetPhotoActivity extends AppCompatActivity {
 
     EditText descriptionText;
     ImageView photoView;
     Bitmap bitmap;
 
-    ImageBitmapDirectAdapter IBDadapter;
-    RecyclerViewAdapter RVadapter;
 
     public void handlePost(View view){
         String description = descriptionText.getText().toString();
 
-        /*Intent data = new Intent();
-        data.putExtra("description", description);
-        data.putExtra("bitmap", bitmap);
-        setResult(RESULT_OK,data);
-        finish();*/// E/JavaBinder: !!! FAILED BINDER TRANSACTION !!!  (parcel size = 3686712) // DATASET TOO LARGE !!! (we will manage it here directly)
+        /*Intent data = new Intent(); data.putExtra("description", description);
+        data.putExtra("bitmap", bitmap); setResult(RESULT_OK,data);
+        finish();*/// E/JavaBinder: !!! FAILED BINDER TRANSACTION !!!  (parcel size = 3686712)
+        // DATASET TOO LARGE !!! (we will manage it here directly)
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -64,8 +60,7 @@ public class GetPhotoActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if (e == null) {
                     Toast.makeText(GetPhotoActivity.this, "Image has been shared!", Toast.LENGTH_SHORT).show();
-                    //RecyclerViewAdapter.Companion.notificationByPass(RVadapter);
-                    //ImageBitmapDirectAdapter.notificationByPass(IBDadapter);
+                    GlobalObserver.updateAllInULA();
                     finish();
                 } else {
                     Toast.makeText(GetPhotoActivity.this, "There has been an issue uploading the image :(", Toast.LENGTH_SHORT).show();
@@ -93,6 +88,9 @@ public class GetPhotoActivity extends AppCompatActivity {
         Uri selectedImage = null;
         if (data != null) {
             selectedImage = data.getData();
+        }
+        else{
+            finish();
         }
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
@@ -122,8 +120,8 @@ public class GetPhotoActivity extends AppCompatActivity {
         descriptionText = findViewById(R.id.descriptionText);
         photoView = findViewById(R.id.photoView);
         setTitle("Choose Photo");
-        //IBDadapter = (ImageBitmapDirectAdapter) getIntent().getSerializableExtra("IBDAdapter");
-        //RVadapter = (RecyclerViewAdapter) getIntent().getSerializableExtra("RVAdapter");
         getPhoto();
     }
+
+
 }

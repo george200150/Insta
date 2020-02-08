@@ -21,14 +21,6 @@ import com.parse.ParseUser;
 
 
 
-//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
-//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
-/// add new class on server -> pair<userId, userId> -> subscribtions ~~~> rethink application logic!
-/// ATM it should be ok to hold those pairs for "FAVOURITE USERS" ---> two list of users in FEED !!!
-//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
-//TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO://TODO:
-
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     TextView loginTextView;

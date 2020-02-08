@@ -4,23 +4,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
-class ForgotPasswordActivity extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
     EditText usernameEditText;
     EditText emailEditText;
 
-    LinearLayout experimentalView;
-
-    /*public void handleForgotPassword(View view){
-        Log.i("FORGOT", "something happened!");
-    }*/
 
     public void handleResetPassword(View view) {
         Log.i("RESET", "pressed!");
+        Toast.makeText(this, "SERVER ERROR. WILL BE FIXED SOON", Toast.LENGTH_LONG).show();
+        //TODO: to get hands on the password I should use server Masterkey, which is not secure !!!
+        //idk how else should I do it...
     }
 
     @Override
@@ -33,8 +32,7 @@ class ForgotPasswordActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.usernameEditText);
         emailEditText = findViewById(R.id.emailEditText);
 
-        experimentalView = findViewById(R.id.experimentalView);
-        //experimentalView.addView(...);
+
 
         //TODO: local cached repo for the bitmaps ( store kvp<userId, superclass{Bitmap}>  -> find out a way to encapsulate ImageView (Bitmap) into other view)
         //experimentalView.

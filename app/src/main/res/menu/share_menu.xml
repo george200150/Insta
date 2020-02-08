@@ -2,5 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Share" android:id="@+id/share" />
+    <item android:title="Delete Photo" android:id="@+id/rmPhoto" />
     <item android:title="Logout" android:id="@+id/logout" />
 </menu>
