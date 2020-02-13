@@ -1,4 +1,4 @@
-package com.project.swipeimages;
+package com.swipeimages;
 
 import android.app.Application;
 

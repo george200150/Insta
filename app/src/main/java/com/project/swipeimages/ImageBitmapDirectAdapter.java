@@ -1,11 +1,14 @@
-package com.project.swipeimages;
+package com.swipeimages;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +28,10 @@ import java.util.List;
 public class ImageBitmapDirectAdapter extends PagerAdapter {
 
     private Context context;
-    private ArrayList<ImageView> imageViewResourceList;
+    private ArrayList<View> imageViewResourceList;
 
 
-    public ImageBitmapDirectAdapter(Context context, ArrayList<ImageView> imageViewResourceList) {
+    public ImageBitmapDirectAdapter(Context context, ArrayList<View> imageViewResourceList) {
         this.context = context;
         this.imageViewResourceList = imageViewResourceList;
     }
@@ -46,7 +49,7 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        ImageView iv;
+        View iv;
         iv = this.imageViewResourceList.get(position);
         container.addView(iv);
         return iv;
@@ -54,14 +57,14 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((ImageView) object);
+        container.removeView((View) object);
     }
 
     public static void notificationByPass(ImageBitmapDirectAdapter adapter){
         adapter.notifyDataSetChanged();
     }
 
-    public static ImageBitmapDirectAdapter setupPageView(String username, boolean isFilteredByUser, final Context appContext, AppCompatActivity thisContext){
+    public static ImageBitmapDirectAdapter setupPageView(String username, boolean isFilteredByUser, final Context appContext, final AppCompatActivity thisContext){
 
         final ImageBitmapDirectAdapter adapter;
 
@@ -71,7 +74,7 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
         }
         query.orderByDescending("createdAt");
 
-        final ArrayList<ImageView> images = new ArrayList<>();
+        final ArrayList<View> images = new ArrayList<>();
         adapter = new ImageBitmapDirectAdapter(thisContext, images);// <- this is initialized before the query is completed!
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -80,6 +83,9 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
                 if (e == null && objects.size() > 0) {
                     for (ParseObject object : objects) {
                         ParseFile file = (ParseFile) object.get("image");
+                        final String objectId = object.getObjectId();
+                        List<String> likes = object.getList("likedBy");
+                        final int likeCount = likes.size();
 
                         file.getDataInBackground(new GetDataCallback() {
                             @Override
@@ -88,9 +94,23 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0,data.length);
                                     ImageView imageView = new ImageView(appContext);
                                     imageView.setImageBitmap(bitmap);
-                                    images.add(imageView);
+                                    imageView.setTag(objectId);
+                                    imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-                                    ImageBitmapDirectAdapter.notificationByPass(adapter);// <- this will help the viewPager see the updated content (because async bruh..)
+                                    ViewGroup view = new LinearLayout(thisContext);
+                                    LinearLayout picLL = new LinearLayout(thisContext);
+                                    picLL.setOrientation(LinearLayout.VERTICAL);
+                                    view.addView(picLL);
+
+                                    picLL.addView(imageView);
+
+                                    TextView likeCountTextView = new TextView(thisContext);
+                                    likeCountTextView.setText(likeCount + " Likes"); // optional singular/plural cases...
+                                    likeCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                                    picLL.addView(likeCountTextView);
+
+                                    images.add(view);
+                                    ImageBitmapDirectAdapter.notificationByPass(adapter);
                                 }
                             }
                         });

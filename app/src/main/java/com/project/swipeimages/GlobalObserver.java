@@ -1,5 +1,7 @@
-package com.project.swipeimages;
+package com.swipeimages;
 
+
+import org.jetbrains.annotations.NotNull;
 
 public class GlobalObserver {// couldn't manage to send those objects through intent... so... here they are
 
@@ -9,13 +11,15 @@ public class GlobalObserver {// couldn't manage to send those objects through in
         ula = userListActivity;
     }
 
-    public static void updateAllInULA(){
-        //we cannot change this code (yet), because, in order to initialize only the current window,
-        //we must know which menu page we're onto. Therefore, we have to initialize all of them.
-        //...unless I could come up with an unusual bypass that would do...
-        ula.setUpDiscover();
-        ula.setUpFeed();
-        ula.setUpNotifications();
+    public static void updateULA(){
+        ula.invalidate();
+    }
+
+    public static void invalidateProfile(){
         ula.setUpProfile();
+    }
+
+    public static void notificationClicked(@NotNull String tag) {
+        ula.deleteNotif(tag);
     }
 }

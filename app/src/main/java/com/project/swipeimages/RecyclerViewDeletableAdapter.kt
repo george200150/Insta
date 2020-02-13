@@ -1,4 +1,4 @@
-package com.project.swipeimages
+package com.swipeimages
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -16,7 +16,7 @@ import java.util.ArrayList
 
 //import java.io.Serializable
 
-class RecyclerViewDeletableAdapter(private val context: Context, private val imageDataList: List<ImageDeletableData>) : /*Serializable,*/ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecyclerViewDeletableAdapter(private val context: Context, private val imageDataList: List<ImagePlusData>) : /*Serializable,*/ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var curImageDataIndex = 0
     // context could be later used
 
@@ -73,21 +73,21 @@ class RecyclerViewDeletableAdapter(private val context: Context, private val ima
             }
             query.orderByDescending("createdAt")
 
-            val images = ArrayList<ImageDeletableData>()
+            val images = ArrayList<ImagePlusData>()
             adapter = RecyclerViewDeletableAdapter(thisContext, images)// <- this is initialized before the query is completed!
 
             query.findInBackground { objects, e ->
                 if (e == null && objects.size > 0) {
                     for (`object` in objects) {
                         val file = `object`.get("image") as ParseFile
-                        val user = `object`.get("username").toString() // finally managed to add more information to a photo (DeletableImageViewHolder and XML files are responsible for that)
+                        val user = `object`.get("username").toString() // finally managed to add more information to a photo (ProfileImageViewHolder and XML files are responsible for that)
                         val description = `object`.get("description").toString()
                         val uniqId = `object`.objectId.toString()
 
                         file.getDataInBackground { data, e ->
                             if (e == null && data != null) {
                                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-                                val imd = ImageDeletableData(user, description, bitmap, uniqId)
+                                val imd = ImagePlusData(user, description, bitmap, uniqId)
                                 images.add(imd)
                                 notificationByPass(adapter)// because async
                             }

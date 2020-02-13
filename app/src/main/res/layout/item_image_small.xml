@@ -22,7 +22,7 @@
         android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:textColor="@android:color/white"
-        android:text="TITLE"
+        android:text="USER"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivImage"

@@ -1,4 +1,4 @@
-package com.project.swipeimages
+package com.swipeimages
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -78,7 +78,7 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
     }
 
     companion object{
-        fun setupPageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewAdapter {
+        fun setupPageView(username: String, isFilteredByUser: Boolean, isInvertedSearch: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewAdapter {
 
             //VAL is a constant ; VAR is a variable !!!
             var position = 0
@@ -86,9 +86,13 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
             val adapter: RecyclerViewAdapter
 
             val query = ParseQuery<ParseObject>("Image")
-            if (isFilteredByUser) {
+            if (isFilteredByUser and !isInvertedSearch) {//look only for the given user
                 query.whereEqualTo("username", username)
             }
+            else if(isFilteredByUser and isInvertedSearch){//search for every user but the one given
+                query.whereNotEqualTo("username", username)
+            }
+
             query.orderByDescending("createdAt")
 
             val images = ArrayList<ImageData>()
@@ -98,7 +102,7 @@ class RecyclerViewAdapter(private val context: Context, private val imageDataLis
                 if (e == null && objects.size > 0) {
                     for (`object` in objects) {
                         val file = `object`.get("image") as ParseFile
-                        val user = `object`.get("username").toString() // finally managed to add more information to a photo (DeletableImageViewHolder and XML files are responsible for that)
+                        val user = `object`.get("username").toString() // finally managed to add more information to a photo (ProfileImageViewHolder and XML files are responsible for that)
                         val description = `object`.get("description").toString()
 
                         file.getDataInBackground { data, e ->

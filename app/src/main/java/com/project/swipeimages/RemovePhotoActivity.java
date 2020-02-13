@@ -1,4 +1,4 @@
-package com.project.swipeimages;
+package com.swipeimages;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -91,7 +91,7 @@ public class RemovePhotoActivity extends AppCompatActivity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 Toast.makeText(RemovePhotoActivity.this, "Your photo was successfully deleted!", Toast.LENGTH_LONG).show();
-                                GlobalObserver.updateAllInULA();
+                                GlobalObserver.updateULA();
                                 String username = ParseUser.getCurrentUser().getUsername();
                                 RecyclerViewDeletableAdapter RVadapter = RecyclerViewDeletableAdapter.Companion.setupDeletablePageView(username, true, getApplicationContext(), RemovePhotoActivity.this);
                                 listPhotosOfUser.setLayoutManager(new LinearLayoutManager(RemovePhotoActivity.this));

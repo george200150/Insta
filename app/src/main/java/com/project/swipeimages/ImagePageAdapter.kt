@@ -1,4 +1,4 @@
-package com.project.swipeimages
+package com.swipeimages
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -27,6 +27,7 @@ class ImagePagerAdapter(
             ImageView(context).apply {
                 setImageURI(imageResourceList[position])
                 scaleType = ImageView.ScaleType.CENTER_CROP
+                tag = photoId
             }.also {
                 (container as VerticalViewPager).addView(it)
             }
@@ -36,7 +37,9 @@ class ImagePagerAdapter(
 
     companion object {
 
-        fun getImageUriFromBitmap(inContext: Context, inImage: Bitmap): Uri {
+        private var photoId: String = "null"
+
+        private fun getImageUriFromBitmap(inContext: Context, inImage: Bitmap): Uri {
             val bytes = ByteArrayOutputStream()
             inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
             val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
@@ -44,28 +47,24 @@ class ImagePagerAdapter(
         }
 
         fun setupPageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): ImagePagerAdapter {
-
             val adapter: ImagePagerAdapter
+            val images = ArrayList<Uri>()
+            adapter = ImagePagerAdapter(thisContext, images)// <- this is initialized before the query is completed!
 
             val query = ParseQuery<ParseObject>("Image")
             if (isFilteredByUser) {
                 query.whereEqualTo("username", username)
             }
             query.orderByDescending("createdAt")
-
-            val images = ArrayList<Uri>()
-            adapter = ImagePagerAdapter(thisContext, images)// <- this is initialized before the query is completed!
-
             query.findInBackground { objects, e ->
                 if (e == null && objects.size > 0) {
                     for (`object` in objects) {
                         val file = `object`.get("image") as ParseFile
-
-                        file.getDataInBackground { data, e ->
-                            if (e == null && data != null) {
+                        photoId = `object`.objectId as String
+                        file.getDataInBackground { data, ee ->
+                            if (ee == null && data != null) {
                                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
                                 images.add(getImageUriFromBitmap(appContext, bitmap))
-
                                 notificationByPass(adapter)// because async
                             }
                         }

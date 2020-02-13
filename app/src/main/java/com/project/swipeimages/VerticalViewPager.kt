@@ -1,4 +1,4 @@
-package com.project.swipeimages
+package com.swipeimages
 
 import android.content.Context
 import android.view.MotionEvent
@@ -6,6 +6,11 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import kotlin.math.abs
 import kotlin.math.max
+import android.text.method.Touch.onTouchEvent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.util.Log
+import android.view.GestureDetector
+
 
 private const val MIN_SCALE = 0.8f
 private const val MIN_ALPHA = 0.7f
@@ -14,10 +19,13 @@ class VerticalViewPager
 (c: Context) :
         ViewPager(c) {
 
+    private val gestureDetector = GestureDetector(c, GestureListener())
+
     init {
         setPageTransformer(true, VerticalPageTransformer())
         overScrollMode = View.OVER_SCROLL_NEVER
     }
+
 
     override fun canScrollHorizontally(direction: Int) = false
 
@@ -35,7 +43,27 @@ class VerticalViewPager
         return intercepted
     }
 
-    override fun onTouchEvent(ev: MotionEvent?) = super.onTouchEvent(swapXY(ev!!))
+    override fun onTouchEvent(ev: MotionEvent?) : Boolean {
+        return super.onTouchEvent(swapXY(ev!!)) or gestureDetector.onTouchEvent(ev)
+
+    }
+
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+
+        // event when double tap occurs
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            val x = e.x
+            val y = e.y
+            Log.d("Double Tap", "Tapped at: ($x,$y)")
+            GlobalUVFAObserver.sendLike()
+            return true
+        }
+    }
 
     inner class VerticalPageTransformer : PageTransformer {
         override fun transformPage(page: View, position: Float) {
