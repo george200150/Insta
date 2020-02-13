@@ -90,7 +90,7 @@ public class UserVerticalFeedActivity extends AppCompatActivity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 if(liked) {
-                                    Toast.makeText(UserVerticalFeedActivity.this, "Photo Liked!", Toast.LENGTH_SHORT).show();//TODO: only the first image is liked. need to know when changing slides !!!
+                                    Toast.makeText(UserVerticalFeedActivity.this, "Photo Liked!", Toast.LENGTH_SHORT).show();
                                 }
                                 else{
                                     Toast.makeText(UserVerticalFeedActivity.this, "Photo Unliked!", Toast.LENGTH_SHORT).show();

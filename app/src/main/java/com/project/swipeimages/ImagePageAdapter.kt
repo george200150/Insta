@@ -1,22 +1,18 @@
 package com.swipeimages
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import com.parse.*
-import java.io.ByteArrayOutputStream
 import java.util.ArrayList
 
 class ImagePagerAdapter(
         val context: Context,
-        private val imageResourceList: List<Uri>
+        private val imageResourceList: List<ImageData>
 ) : PagerAdapter() {
 
     override fun isViewFromObject(view: View, obj: Any) = view == obj as ImageView
@@ -25,9 +21,9 @@ class ImagePagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any =
             ImageView(context).apply {
-                setImageURI(imageResourceList[position])
+                setImageBitmap(imageResourceList[position].resource)
                 scaleType = ImageView.ScaleType.CENTER_CROP
-                tag = photoId
+                tag = imageResourceList[position].title
             }.also {
                 (container as VerticalViewPager).addView(it)
             }
@@ -37,18 +33,9 @@ class ImagePagerAdapter(
 
     companion object {
 
-        private var photoId: String = "null"
-
-        private fun getImageUriFromBitmap(inContext: Context, inImage: Bitmap): Uri {
-            val bytes = ByteArrayOutputStream()
-            inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-            val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
-            return Uri.parse(path)
-        }
-
         fun setupPageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): ImagePagerAdapter {
             val adapter: ImagePagerAdapter
-            val images = ArrayList<Uri>()
+            val images = ArrayList<ImageData>()
             adapter = ImagePagerAdapter(thisContext, images)// <- this is initialized before the query is completed!
 
             val query = ParseQuery<ParseObject>("Image")
@@ -60,11 +47,12 @@ class ImagePagerAdapter(
                 if (e == null && objects.size > 0) {
                     for (`object` in objects) {
                         val file = `object`.get("image") as ParseFile
-                        photoId = `object`.objectId as String
+                        val photoId = `object`.objectId as String
                         file.getDataInBackground { data, ee ->
                             if (ee == null && data != null) {
                                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-                                images.add(getImageUriFromBitmap(appContext, bitmap))
+                                val imd = ImageData(photoId, "-", bitmap)
+                                images.add(imd)
                                 notificationByPass(adapter)// because async
                             }
                         }
