@@ -15,6 +15,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     EditText emailEditText;
 
 
+    /**
+     * this is supposed to make a reset password request to the server, but there must be set a
+     * mailing server so that everything works fine...
+     */
     public void handleResetPassword(View view) {
         Log.i("RESET", "pressed!");
         Toast.makeText(this, "SERVER ERROR. WILL BE FIXED SOON", Toast.LENGTH_LONG).show();

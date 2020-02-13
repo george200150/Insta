@@ -8,19 +8,19 @@ import com.parse.ParseACL;
 
 public class StarterApplication extends Application {
 
+    /**
+     * Method that sets up the information necessary for Parse to access the running server on AWS.
+     */
     @Override
     public void onCreate() {
         super.onCreate();
-
-    /*
-    ******************************************************************************
-    The default username and password is 'user' and 'RnbH7mTYtjCX'.
-    ******************************************************************************
-    */
-
+        /*
+        ******************************************************************************
+        The default username and password is 'user' and 'RnbH7mTYtjCX'.
+        ******************************************************************************
+        */
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
-
         // Add your initialization code here
         Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
                 .applicationId("020bf509ccc736b9d9dac006339d371dea4be1f6")
@@ -28,11 +28,7 @@ public class StarterApplication extends Application {
                 .server("http://18.191.50.192:80/parse/")
                 .build()
         );
-
-
-
         //ParseUser.enableAutomaticUser();
-
         ParseACL defaultACL = new ParseACL();
         defaultACL.setPublicReadAccess(true);
         defaultACL.setPublicWriteAccess(true);

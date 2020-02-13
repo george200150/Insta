@@ -41,7 +41,27 @@ public class UserVerticalFeedActivity extends AppCompatActivity {
     boolean liked = true;
 
 
-    public void receivelikedNotification() {// maybe i don't have to use that observer..
+    /**
+     * This method has three main parts: identifying the view, sending the like, sending the notif.
+     *
+     * 1. we get all the items of the ViewPager and look for the current one (which is for sure the
+     * one we clicked on, because it is simply impossible to be otherwise as our view is always
+     * focused on a single image), then when we find it, we get the useful data from it (which
+     * represents its tag which is equal to the objectId of the server object, therefore making it
+     * easy for us to find further information in the database) and save it into the objectId.
+     *
+     * 2. We query the list of Images from the database to find all (at most one, because objectId
+     * is a PrimaryKey) the objects that have the specified objectId. Then, we get its list of
+     * people (usernames) who liked it. If the current user's name is contained by the list, it
+     * means that our Double Tap Gesture is meant to Unlike the photo. Otherwise, we Like the Image.
+     * We insert/extract the current username into/from the list and save it in background.
+     *
+     * 3. While saving the list of people who liked the selected photo, we create a Notification
+     * FROM the current user TO the user who the Image belongs to. Also, we include the liked photo,
+     * in order to display aside the notification. (pointer to the image would have been better)
+     * When finished, we notify the current user of his action. (like / unlike)
+     */
+    public void receivelikedNotification() {
         ParseUser user = ParseUser.getCurrentUser();
         final String username = user.getUsername();
 
@@ -116,8 +136,12 @@ public class UserVerticalFeedActivity extends AppCompatActivity {
     }
 
 
-
-
+    /**
+     * This initialization method is called in order to gather all the items and resources, and also
+     * to set additional info, such as Intent's title, specific text to the "SUBSCRIBE/UNSUBSCRIBE"
+     * Button, and show the photos from the user's Feed (done using a static method from the View),
+     * as well as the profile picture.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,6 +195,13 @@ public class UserVerticalFeedActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * This method handles the action of subscribing / unsubscribing. It sets the text of the Button
+     * to its complement when clicked and updates the current user's list of people they follow.
+     * It saves the user's info in the background and notifies the GlobalObserver about the change.
+     * (in order to show the user in feed (and, for larger apps, it would be useful when trimming
+     * notifications of spamming users or friends))
+     */
     public void handleSubscription(View view) {
         if(this.buttonSubscribe.getText().equals("SUBSCRIBE")){
             //subscribe this user

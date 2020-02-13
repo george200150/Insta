@@ -26,24 +26,38 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     TextView loginTextView;
     EditText usernameEditText;
     EditText emailEditText;
-    //EditText bDayEditText; - maybe one other time
     EditText passwordEditText;
 
+
+    /**
+     * This method creates a new Intent and sends us from the sign up menu to the core menu.
+     */
     public void showUserList() {
         Intent intent = new Intent(getApplicationContext(), UserListActivity.class);
         startActivity(intent);
     }
 
+
+    /**
+     * @param i - KeyCode of the pressed key
+     * @param keyEvent - the event itself
+     * @return false, because it does not matter what it returns, it is important to execute the
+     * signUpClicked function. (if the "SIGNUP" Button is clicked or the ENTER Key is pressed)
+     */
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
-
         if (i == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
             signUpClicked(view);
         }
-
         return false;
     }
 
+
+    /**
+     * Method that manages the clicks on the screen. If we click on the "LOGIN" blue text, we are
+     * redirected to the LogIn menu. If we click on the background of the View, then we get its
+     * focus, meaning that if we are typing something, the virtual keyboard will disappear.
+     */
     @Override
     public void onClick(View view) {//NOTA BENE: THE "LOGIN" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
         if (view.getId() == R.id.loginTextView) {
@@ -59,6 +73,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    /**
+     * Method that managed the data input and suggests any changes if one of the fields are empty,
+     * username is already taken, or sign up failed by any means.
+     */
     public void signUpClicked(View view) {
 
         if (usernameEditText.getText().toString().matches("") || passwordEditText.getText().toString().matches("")) {
@@ -85,6 +103,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    /**
+     * Method that gathers all the necessary data and sets listeners of the important View in the
+     * Activity layout. Also, if there is an existent session (a user is already connected
+     * (e.g. just started the app again)), then we will be redirected to the UserListActivity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -99,7 +122,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         passwordEditText = findViewById(R.id.passwordEditText);
 
         emailEditText = findViewById(R.id.emailEditText);
-        //bDayEditText = findViewById(R.id.bDayEditText);
 
         ImageView logoImageView = findViewById(R.id.logoImageView);
         RelativeLayout backgroundLayout = findViewById(R.id.backgroundLayout);

@@ -43,6 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Enum Type representing the three dot menu choices available to the user.
+ * The types are used when deciding which menu the user is currently viewing.
+ */
 enum MenuType{
     FEED,
     DISCOVER,
@@ -75,6 +79,13 @@ public class UserListActivity extends AppCompatActivity {
     int notifNumber;
 
 
+    /**
+     * Method that initializes the Activity by gathering the resources, setting up the listener for
+     * the autoComplete, calling the functions responsible for the menus setup, setting up the
+     * GlobalObserver, setting the "isSet_" attributes so that the programme knows only the startup
+     * menu was initialized. (this boosts up the start speed but increases the waiting time when
+     * switching between the uninitialized menus)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +149,8 @@ public class UserListActivity extends AppCompatActivity {
 
         /**
          * Called when an item in the bottom navigation menu is selected.
+         * This switch-case inside the listener is supposed to make visible to the user only the
+         * selected menu's view and set them up if not already set up. (according to the "isSet"-s)
          *
          * @param item The selected item
          * @return true to display the item as the selected item and false if the item should not be
@@ -217,31 +230,21 @@ public class UserListActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //<Discover>
-        //this.setUpDiscover(); - lazy init
-        //</Discover>
-
-        //<Profile>
-        //this.setUpProfile(); - lazy init
-        //</Profile>
-
-        //<Feed>
         setUpFeed();// home screen. must init.
-        //</Feed>
-
-        //<Notifications>
         setUpNotifications();// CANNOT BE - lazy init
-        //</Notifications>
     }
 
 
-
+    /**
+     * Method that sets up the Feed.
+     * It loads the list of followed users and displays it to the user.
+     * Also, it adds all the names of the users in the autoCompleteSearchBar, in order to be able to
+     * access anyone's profile when ENTER is pressed.
+     */
     public void setUpFeed() {
         isSetFeed = true;
         final ListView listView = findViewById(R.id.listView);
         users.clear();
-        //final ArrayList<String> usernames = new ArrayList<>();
         final ArrayList<String> followedUsers = new ArrayList<>();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -285,6 +288,12 @@ public class UserListActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Method that deletes the notification in the list with the specified tag.
+     * It also resets the notification menu, to show the updated list of notifications, if any.
+     * @param tag - objectId from the database of the Notification (to find it easier)
+     */
     public void deleteNotif(String tag) {
         ParseQuery<ParseObject> notifQuery = new ParseQuery<>("Notification");
         notifQuery.whereEqualTo("objectId", tag);
@@ -313,6 +322,12 @@ public class UserListActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Method that sets up the Discover.
+     * It loads all the pictures of all the users in a RecyclerView that will show some adds, the
+     * same as real apps do.
+     */
     public void setUpDiscover(){
         isSetDiscover = true;
         final RecyclerView rvItems = findViewById(R.id.rvItems);
@@ -324,6 +339,13 @@ public class UserListActivity extends AppCompatActivity {
         rvItems.setAdapter(RVadapter);
     }
 
+
+    /**
+     * Method that sets up the Notifications.
+     * (Cannot be lazy init because when the app is opened, the user must know the notifications.)
+     * It loads the list of notifications, creates a Red Badge with the number of Notifications on
+     * it, to attract the user's attention, or shows only the "no notifications now" text.
+     */
     public void setUpNotifications() { // notification icon cannot be lazy init !!!
         isSetNotifications = true;
         rvNotifications = findViewById(R.id.notifRLV);
@@ -359,6 +381,10 @@ public class UserListActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method that sets up the Profile.
+     * It loads the current user's posted images, the profile picture and their username.
+     */
     public void setUpProfile() {
         isSetProfile = true;
         profileText.setText(ParseUser.getCurrentUser().getUsername());
@@ -397,6 +423,12 @@ public class UserListActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method that is called by the GlobalObserver, in order to notify any important changes that
+     * would make the onscreen data out-of-date and would require further reloading from the server.
+     * the "isSet___" attributes are checked every time the user changes menus, in order to load
+     * only the necessary data when it is needed. (therefore, helps with the lazy initialization)
+     */
     public void invalidate(){//used for invalidating loaded data from lists when an update is made
         isSetFeed = false;
         isSetDiscover = false;
@@ -417,17 +449,35 @@ public class UserListActivity extends AppCompatActivity {
         }
 
     }
+
+
+    /**
+     * Method that creates a new Intent and opens a window for us to select from gallery a photo.
+     * This has effect on the user's profile photo.
+     */
     public void handleEditProfilePhoto(View view){ // handleEditProfilePhoto and getPhoto could share same class but the handlePost would be a delegate...
         Intent intent = new Intent(this, GetProfilePhotoActivity.class);
         startActivity(intent);
     }
 
+
+    /**
+     * Method that creates a new Intent and opens a window for us to select from gallery a photo.
+     * This has effect on the user's feed photos.
+     */
     public void getPhoto() {
         Intent intent = new Intent(getApplicationContext(), GetPhotoActivity.class);
         startActivity(intent);
     }
 
 
+    /**
+     * Method that checks if the user allowed the app to get access to Storage. If confirmed, it
+     * will take a photo and further process it.
+     * @param requestCode - theoretical requested code
+     * @param permissions - actual requested code
+     * @param grantResults - permissions granted by the user
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -439,6 +489,12 @@ public class UserListActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Method that sets up the three dots menu in the upper-right corner of the screen.
+     * @param menu - the menu we created and put in the resources folder
+     * @return the value of the super method
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -448,6 +504,19 @@ public class UserListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    /**
+     * This method manages all the selection cases of items from the three dots menu.
+     * 1.share = Creates a new window, in order to ask permissions to read the storage if the
+     * permission has not already been granted. Else, it opens the gallery straightaway.
+     *
+     * 2.logout = Logs out the user and redirects them to the login screen.
+     *
+     * 3.rmPhoto = Creates a new Intent and opens the RemovePhotoActivity, where we can delete pics.
+     *
+     * @param item - selected menu item
+     * @return the value of the super method (we focus on the function calls we make)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

@@ -19,6 +19,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 
@@ -40,7 +42,7 @@ public class RemovePhotoActivity extends AppCompatActivity {
 
         listPhotosOfUser.addOnItemTouchListener(new DeletableRecyclerViewClickListener(getApplicationContext(), listPhotosOfUser, new DeletableRecyclerViewClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(@NotNull View view, int position) {
                 ConstraintLayout rez = (ConstraintLayout) listPhotosOfUser.getLayoutManager().findViewByPosition(position);
                 if (rez != null) {
                     //we have saved the (Image) Object ID from the server in the image's tag.
@@ -68,12 +70,12 @@ public class RemovePhotoActivity extends AppCompatActivity {
                     Toast.makeText(RemovePhotoActivity.this, "We couldn't delete the photo :(", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onLongItemClick(View view, int position) {
                 //pass
             }
         }));
-
     }
 
     private void deletePhotoFromTheDatabase(String objectId){
