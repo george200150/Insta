@@ -18,10 +18,17 @@ class RecyclerViewNotificationsAdapter(private val context: Context, private val
     private var curImageDataIndex = 0
     // context could be later used
 
+    /**
+     * initialize the viewHolder with our own
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ProfileImageViewHolder(inflateResource(parent, R.layout.item_notification))
     }
 
+
+    /**
+     * method used for binding the holder to a certain position in the list and show it to the user
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val imageData = imageDataList[curImageDataIndex]
         (holder as ProfileImageViewHolder).notifImg.setImageBitmap(imageData.resource)
@@ -42,10 +49,20 @@ class RecyclerViewNotificationsAdapter(private val context: Context, private val
     }
 
 
+    /**
+     * method used for initializing the holders' data and listeners
+     */
     private fun inflateResource(parent: ViewGroup, resourceId: Int): View {
         return LayoutInflater.from(parent.context).inflate(resourceId, parent, false)
     }
 
+
+    /**
+     * custom inner class that inherits from the ViewHolder class
+     * This class will receive all the attributes we need to make a complete item in the list, as we
+     * intended to. It also implements the onClick method so that each notification click will be
+     * sent to the GlobalObserver and delivered to the UserListActivity where it will be processed.
+     */
     internal inner class ProfileImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var notifImg: ImageView
         var notifText: TextView
@@ -60,7 +77,7 @@ class RecyclerViewNotificationsAdapter(private val context: Context, private val
 
         override fun onClick(v: View?) {
             if(v != null) {
-                GlobalObserver.notificationClicked(v!!.tag as String)
+                GlobalObserver.notificationClicked(v.tag as String)
             }
         }
     }
@@ -68,6 +85,14 @@ class RecyclerViewNotificationsAdapter(private val context: Context, private val
 
     companion object{
 
+        /**
+         * static method used to setup the adapter of the RecyclerView
+         * It creates the array of data, the adapter itself and queries the database, in order to
+         * setup the useful information to each View using a ImagePlusData structure to gather it
+         * all in a single object that we will unpack in the onBindViewHolder method.
+         * Each time we create a new item and send it to the RecyclerView, we must consider
+         * notifying the adapter that its data set has changed.
+         */
         fun setupNotifPageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewNotificationsAdapter {
             val adapter: RecyclerViewNotificationsAdapter
             val images = ArrayList<ImagePlusData>()
@@ -98,6 +123,7 @@ class RecyclerViewNotificationsAdapter(private val context: Context, private val
             }
             return adapter
         }
+
 
         fun notificationByPass(adapter: RecyclerViewNotificationsAdapter) {
             adapter.notifyDataSetChanged()

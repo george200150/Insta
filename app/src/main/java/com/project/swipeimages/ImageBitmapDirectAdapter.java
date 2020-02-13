@@ -64,6 +64,19 @@ public class ImageBitmapDirectAdapter extends PagerAdapter {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * This method queries the images, finding the ones of the user when considering searching only
+     * for the username, or all of them when not filtering, and gathers all the information from the
+     * images, puts it all together in an individual view (the image + like count text)
+     * (views must have specified layout parameters), which are then encapsulated in a ViewGroup
+     * layout and the whole formation is added to the item list, in order to be displayed.
+     *
+     * @param username - username to be considered when filtering
+     * @param isFilteredByUser - boolean value if considering the username or not in the query
+     * @param appContext - context
+     * @param thisContext - context
+     * @return adapter ready to be set to the view
+     */
     public static ImageBitmapDirectAdapter setupPageView(String username, boolean isFilteredByUser, final Context appContext, final AppCompatActivity thisContext){
 
         final ImageBitmapDirectAdapter adapter;

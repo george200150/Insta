@@ -20,10 +20,17 @@ class RecyclerViewDeletableAdapter(private val context: Context, private val ima
     private var curImageDataIndex = 0
     // context could be later used
 
+    /**
+     * initialize the viewHolder with our own
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return DeletableImageViewHolder(inflateResource(parent, R.layout.item_photo_deletable))
     }
 
+
+    /**
+     * method used for binding the holder to a certain position in the list and show it to the user
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val imageData = imageDataList[curImageDataIndex]
         (holder as DeletableImageViewHolder).ivImage.setImageBitmap(imageData.resource)
@@ -39,15 +46,25 @@ class RecyclerViewDeletableAdapter(private val context: Context, private val ima
         }
     }
 
+
     override fun getItemCount(): Int {
         return imageDataList.size
     }
 
 
+    /**
+     * method used for initializing the holders' data and listeners
+     */
     private fun inflateResource(parent: ViewGroup, resourceId: Int): View {
         return LayoutInflater.from(parent.context).inflate(resourceId, parent, false)
     }
 
+
+    /**
+     * custom inner class that inherits from the ViewHolder class
+     * This class will receive all the attributes we need to make a complete item in the list, as we
+     * intended to.
+     */
     internal inner class DeletableImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var ivImage: ImageView
@@ -63,6 +80,15 @@ class RecyclerViewDeletableAdapter(private val context: Context, private val ima
 
 
     companion object{
+
+        /**
+         * static method used to setup the adapter of the RecyclerView
+         * It creates the array of data, the adapter itself and queries the database, in order to
+         * setup the useful information to each View using a ImagePlusData structure to gather it
+         * all in a single object that we will unpack in the onBindViewHolder method.
+         * Each time we create a new item and send it to the RecyclerView, we must consider
+         * notifying the adapter that its data set has changed.
+         */
         fun setupDeletablePageView(username: String, isFilteredByUser: Boolean, appContext: Context, thisContext: AppCompatActivity): RecyclerViewDeletableAdapter {
 
             val adapter: RecyclerViewDeletableAdapter

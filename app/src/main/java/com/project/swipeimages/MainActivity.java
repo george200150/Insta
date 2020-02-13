@@ -20,18 +20,30 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 
-
+/**
+ * SignUpActivity complement, the rather LogInActivity
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     TextView loginTextView;
     EditText usernameEditText;
     EditText passwordEditText;
 
+    /**
+     * This method creates a new Intent and sends us from the sign up menu to the core menu.
+     */
     public void showUserList() {
         Intent intent = new Intent(getApplicationContext(), UserListActivity.class);
         startActivity(intent);
     }
 
+
+    /**
+     * @param i - KeyCode of the pressed key
+     * @param keyEvent - the event itself
+     * @return false, because it does not matter what the event does, it is important to execute the
+     * logInClicked function. (if the "LOGIN" Button is clicked or the ENTER Key is pressed)
+     */
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
@@ -42,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
+
+    /**
+     * Method that manages the clicks on the screen. If we click on the "SIGNUP" blue text, we are
+     * redirected to the SignUp menu. If we click on the background of the View, then we get its
+     * focus, meaning that if we are typing something, the virtual keyboard will disappear.
+     */
     @Override
     public void onClick(View view) {//NOTA BENE: THE "SIGNUP" TEXT VIEW DOES NOT HAVE A SEPARATE "ONCLICK" FUNCTION !!!
         if (view.getId() == R.id.loginTextView) {
@@ -56,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    /**
+     * Method that redirects the user to the ForgotPasswordActivity, in order to request a
+     * password recovery. (not implemented)
+     */
     public void handleForgotPassword(View view) {
         // intent to new window
         Log.i("FORGOT", "clicked on forgot password");
@@ -64,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+    /**
+     * Method that managed the data input and suggests any changes if one of the fields are empty,
+     * username was not found, or log in failed by any means.
+     */
     public void logInClicked(View view) {
 
         if (usernameEditText.getText().toString().matches("") || passwordEditText.getText().toString().matches("")) {
@@ -85,6 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    /**
+     * Method that gathers all the necessary data and sets listeners of the important View in the
+     * Activity layout. Also, if there is an existent session (a user is already connected
+     * (e.g. just started the app again)), then we will be redirected to the UserListActivity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -40,6 +40,13 @@ public class RemovePhotoActivity extends AppCompatActivity {
         listPhotosOfUser.setLayoutManager(new LinearLayoutManager(this));
         listPhotosOfUser.setAdapter(RVadapter);
 
+        /**
+         * Listener that when the item is clicked, triggers the collection of data from the item
+         * (gets the objectId of the Image) and creates a confirmation window asking the user
+         * whether to delete the photo, or not. If the positive button is clicked, then the
+         * deletePhotoFromTheDatabase function is called to permanently delete the photo. Else, the
+         * window is closed and the user will be able to navigate through the list of photos again.
+         */
         listPhotosOfUser.addOnItemTouchListener(new DeletableRecyclerViewClickListener(getApplicationContext(), listPhotosOfUser, new DeletableRecyclerViewClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
@@ -78,6 +85,13 @@ public class RemovePhotoActivity extends AppCompatActivity {
         }));
     }
 
+
+    /**
+     * Method that creates a query and looks for the image to be deleted. When found, we delete it
+     * from the server and notify the user. Also, we invalidate the currently loaded data from the
+     * menus and we reset the RecyclerView responsible for showing the list of photos.
+     * @param objectId - primary key of the Image from the server
+     */
     private void deletePhotoFromTheDatabase(String objectId){
         ParseQuery<ParseObject> query = new ParseQuery<>("Image");
         query.whereEqualTo("objectId", objectId);

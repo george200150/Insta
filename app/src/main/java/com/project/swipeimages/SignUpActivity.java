@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * @param i - KeyCode of the pressed key
      * @param keyEvent - the event itself
-     * @return false, because it does not matter what it returns, it is important to execute the
+     * @return false, because it does not matter what the event does, it is important to execute the
      * signUpClicked function. (if the "SIGNUP" Button is clicked or the ENTER Key is pressed)
      */
     @Override
