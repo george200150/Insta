@@ -6,8 +6,6 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import kotlin.math.abs
 import kotlin.math.max
-import android.text.method.Touch.onTouchEvent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.GestureDetector
 

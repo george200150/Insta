@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/alreadyAccountTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
         android:fontFamily="sans-serif-medium"
         android:text="Log In"
         android:textColor="@color/blue"
@@ -76,28 +76,31 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="450dp"
+        android:layout_below="@+id/signUpButton"
+        android:layout_marginRight="330dp"
+        android:layout_marginTop="90dp"
         android:background="#CACACA"
         android:visibility="visible"
-        tools:visibility="visible"
-        android:layout_marginRight="310dp" />
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="450dp"
+        android:layout_below="@+id/signUpButton"
+        android:layout_marginLeft="330dp"
+        android:layout_marginTop="90dp"
         android:background="#CACACA"
         android:visibility="visible"
-        tools:visibility="visible"
-        android:layout_marginLeft="310dp" />
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/alreadyAccountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/signUpButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginVertical="440dp"
+        android:layout_marginTop="80dp"
         android:fontFamily="sans-serif-black"
         android:text="ALREADY HAVE AN ACCOUNT?"
         android:textSize="16sp"

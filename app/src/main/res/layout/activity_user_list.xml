@@ -78,14 +78,12 @@
         android:layout_height="98dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
+        android:layout_marginBottom="50dp"
         android:onClick="handleEditProfilePhoto"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/viewProfilePager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.005"
         tools:srcCompat="@drawable/ic_profile" />
 
     <androidx.recyclerview.widget.RecyclerView

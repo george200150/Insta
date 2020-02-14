@@ -102,42 +102,24 @@ public class UserListActivity extends AppCompatActivity {
         profileText = findViewById(R.id.profileText);
         autoCompleteSearchBarView = findViewById(R.id.autoCompleteSearchBarView);
         autoCompleteSearchBarView.setThreshold(1);
-        autoCompleteSearchBarView.setKeyListener(new KeyListener() {
+        autoCompleteSearchBarView.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
             @Override
-            public int getInputType() {
-                return 1;
-            }
-            @Override
-            public boolean onKeyDown(View view, Editable text, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    final Intent intent = new Intent(getApplicationContext(), UserVerticalFeedActivity.class);
-                    intent.putExtra("username", autoCompleteSearchBarView.getText().toString());
+            public void onDismiss() {
+                final Intent intent = new Intent(getApplicationContext(), UserVerticalFeedActivity.class);
+                intent.putExtra("username", autoCompleteSearchBarView.getText().toString());
 
-                    ParseQuery<ParseUser> checkUserQuery = ParseUser.getQuery();
-                    checkUserQuery.whereEqualTo("username", autoCompleteSearchBarView.getText().toString());
-                    checkUserQuery.findInBackground(new FindCallback<ParseUser>() {
-                        @Override
-                        public void done(List<ParseUser> users, ParseException e) {
-                            if (e == null && users.size() > 0) {
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(UserListActivity.this, "Could not find user :(", Toast.LENGTH_SHORT).show();
-                            }
+                ParseQuery<ParseUser> checkUserQuery = ParseUser.getQuery();
+                checkUserQuery.whereEqualTo("username", autoCompleteSearchBarView.getText().toString());
+                checkUserQuery.findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> users, ParseException e) {
+                        if (e == null && users.size() > 0) {
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(UserListActivity.this, "Could not find user :(", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
-                return UserListActivity.super.onKeyDown(keyCode, event);
-            }
-            @Override
-            public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
-                return UserListActivity.super.onKeyUp(keyCode, event);
-            }
-            @Override
-            public boolean onKeyOther(View view, Editable text, KeyEvent event) {
-                return true;
-            }
-            @Override
-            public void clearMetaKeyState(View view, Editable content, int states) {
+                    }
+                });
             }
         });
         GlobalObserver.setULA(this);
